@@ -4,6 +4,7 @@ import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-co
 import { Repository } from 'typeorm';
 import { TiendaEntity } from './tienda.entity';
 import { TiendaService } from './tienda.service';
+import { faker } from '@faker-js/faker';
 
 describe('TiendaService', () => {
   let service: TiendaService;
@@ -21,5 +22,21 @@ describe('TiendaService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('create should return a new museum', async () => {
+    const tienda: TiendaEntity = {
+      id: 0,
+      nombre: faker.datatype.string(),
+      direccion: faker.datatype.string(),
+      telefono: faker.datatype.string(),
+      cafes: []
+    }
+    const newTienda: TiendaEntity = await service.create(tienda);
+    expect(newTienda).not.toBeNull();
+ 
+    const storedTienda: TiendaEntity = await repository.findOne({where: {id: newTienda.id}})
+    expect(storedTienda).not.toBeNull();
+    expect(storedTienda.nombre).toEqual(storedTienda.nombre)
   });
 });
